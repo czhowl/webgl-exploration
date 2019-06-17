@@ -2,26 +2,30 @@ var scene = new THREE.Scene();
 // var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var camera = new THREE.OrthographicCamera(window.innerWidth / -400, window.innerWidth / 400, window.innerHeight / 400, window.innerHeight / -400, 0, 1000);
 
-var renderer = new THREE.WebGLRenderer({antialias: true});
+var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
 // var winResize = new THREEx.WindowResize(renderer, camera)
 renderer.setSize(window.innerWidth, window.innerHeight);
-
+renderer.setClearColor( 0xffffff, 0);
 document.body.appendChild(renderer.domElement);
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 var material = new THREE.MeshNormalMaterial();
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
 
+
+var texture = THREE.TextureLoader( "../img/moon.png" );
+var mat = new THREE.MeshLambertMaterial({ map : texture });
+console.log(texture);
+var plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+plane.material.side = THREE.DoubleSide;
+
+var cube = new THREE.Mesh(geometry, material);
+// scene.add(cube);
+scene.add(plane);
 camera.position.z = 5;
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 // controls.autoRotate = true;
 controls.enableDamping = true;
-// controls.minPolarAngle = 1.5;
-// controls.maxPolarAngle = 1.7;
-// controls.minAzimuthAngle = -0.1;
-// controls.maxAzimuthAngle = 0.1;
 controls.dampingFactor = 0.07;
 controls.rotateSpeed = 0.03;
 controls.dispose();
@@ -36,10 +40,11 @@ function onWindowResize() {
     camera.top = window.innerHeight / 400;
     camera.bottom = -window.innerHeight / 400;
     camera.updateProjectionMatrix();
+    controls.handleMouseMoveRotate(window.innerWidth/2, window.innerHeight/2);
 };
 
 function onMouseMove(event) {
-    controls.handleMouseMoveRotate(event);
+    controls.handleMouseMoveRotate(event.clientX, event.clientY);
 };
 
 
@@ -50,9 +55,6 @@ document.addEventListener('mousemove', onMouseMove, false);
 var animate = function () {
     controls.update();
     requestAnimationFrame(animate);
-
-    // cube.rotation.x += 0.01;
-    // cube.rotation.y += 0.01;
 
     renderer.render(scene, camera);
 };

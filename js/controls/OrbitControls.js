@@ -451,17 +451,16 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	}
 
-	this.handleMouseMoveRotate = function ( event ) {
+	this.handleMouseMoveRotate = function ( mouseX, mouseY ) {
 
 		//console.log( 'handleMouseMoveRotate' );
-		var mouseX = event.clientX;
-		var mouseY = event.clientY;
-		var x = window.innerHeight;
+		var limit = 100;
+		var x = window.innerWidth;
 		var y = window.innerHeight;
 		const boundX = mouseX * 0.1 - x * 0.5 * 0.1;
 		const boundY = mouseY * 0.1 - y * 0.5 * 0.1;
 
-		rotateEnd.set(boundX, boundY);
+		rotateEnd.set(Math.max(-limit, Math.min(boundX, limit)), Math.max(-limit, Math.min(boundY, limit)));
 		
 		rotateDelta.subVectors( rotateEnd, rotateStart ).multiplyScalar( scope.rotateSpeed );
 
