@@ -8,7 +8,7 @@ var renderer = new THREE.WebGLRenderer({
 });
 // var winResize = new THREEx.WindowResize(renderer, camera)
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0xffffff, 0);
+renderer.setClearColor(0x000000, 0);
 document.body.appendChild(renderer.domElement);
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -24,7 +24,14 @@ var loader = new THREE.TextureLoader();
 loader.load("../img/moon.png", function (texture) {
     console.log(texture);
     var mat = new THREE.MeshPhongMaterial({
-        map: texture
+        map: texture,
+        ambient: 0xdddddd,
+        // emissive: 0x777777,
+        // color: 0xdddddd,
+        specular: 0x777777,
+        shininess: 10,
+        shading: THREE.SmoothShading,
+        transparent: true
     });
     var plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), mat);
     scene.add(plane);
@@ -34,7 +41,7 @@ loader.load("../img/moon.png", function (texture) {
 // scene.add(cube);
 var pLight = new THREE.PointLight(0xffffff, 1.0);
 //pLight.castShadow = true;
-pLight.position.set(0, 3, 3);
+pLight.position.set(0, 9, 9);
 scene.add(pLight);
 
 camera.position.z = 5;
