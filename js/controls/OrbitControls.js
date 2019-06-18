@@ -457,8 +457,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 		var limit = 100;
 		var x = window.innerWidth;
 		var y = window.innerHeight;
-		const boundX = mouseX * 0.1 - x * 0.5 * 0.1;
-		const boundY = mouseY * 0.1 - y * 0.5 * 0.1;
+		const boundX = mouseX - x * 0.5;
+		const boundY = mouseY - y * 0.5;
 
 		rotateEnd.set(Math.max(-limit, Math.min(boundX, limit)), Math.max(-limit, Math.min(boundY, limit)));
 		
