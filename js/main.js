@@ -21,7 +21,7 @@ var material = new THREE.MeshNormalMaterial();
 // plane.material.side = THREE.DoubleSide;
 
 var loader = new THREE.TextureLoader();
-loader.load("../img/moon.png", function (texture) {
+loader.load("../img/fhi.png", function (texture) {
     console.log(texture);
     var mat = new THREE.MeshPhongMaterial({
         map: texture,
@@ -29,11 +29,11 @@ loader.load("../img/moon.png", function (texture) {
         // emissive: 0x777777,
         // color: 0xdddddd,
         specular: 0x777777,
-        shininess: 10,
+        shininess: 20,
         shading: THREE.SmoothShading,
         transparent: true
     });
-    var plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), mat);
+    var plane = new THREE.Mesh(new THREE.PlaneGeometry(.8, .8), mat);
     scene.add(plane);
 });
 
