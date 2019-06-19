@@ -25,8 +25,8 @@ loader.load("../img/ethreal.jpg", function (texture) {
     console.log(texture);
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.offset.set(0, -1.8);
-    texture.repeat.set(2, 2);
+    // texture.offset.set(0, -1.8);
+    // texture.repeat.set(2, 2);
     var mat = new THREE.MeshPhongMaterial({
         map: texture,
         ambient: 0xfffffff,

@@ -36,7 +36,7 @@ void main() {
     }
     vec3 color = mix(colorA, colorB, vUv.z);
     vec3 c = color * addedLights.rgb + color * 0.1;
-    gl_FragColor = vec4(c, 1.0);
+    gl_FragColor = vec4(c, 0.5);
 }
 `;
 
@@ -49,7 +49,7 @@ let rotSpeed = new THREE.Vector3(0.01, 0.01, 0.0);
 let axesHelper;
 let uniforms;
 let customPointLight;
-
+let pointLight = new THREE.PointLight(0xffffff)
 function initialize() {
   scene = new THREE.Scene();
   renderer = new THREE.WebGLRenderer({
@@ -81,7 +81,7 @@ function initialize() {
   //   scene.add(axesHelper);
 
   addCube();
-  let pointLight = new THREE.PointLight(0xfffffff)
+  
   pointLight.position.set(0, 0, 5)
   scene.add(pointLight)
 
@@ -127,11 +127,11 @@ function addCube() {
     },
     colorA: {
       type: 'vec3',
-      value: new THREE.Color(0x74ebd5)
+      value: new THREE.Color(0xff89d9)
     },
     colorB: {
       type: 'vec3',
-      value: new THREE.Color(0xACB6E5)
+      value: new THREE.Color(0x74ebd5)
     }
   };
   uniforms = THREE.UniformsUtils.merge([
@@ -143,7 +143,12 @@ function addCube() {
     uniforms: uniforms,
     vertexShader: vertexShader2,
     fragmentShader: fragmentShader1,
-    lights: true
+    lights: true,
+    side: THREE.DoubleSide,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthTest: true,
+    depthWrite: true,
   };
 
   const customMaterial = new THREE.ShaderMaterial(shaderMaterialParams);
@@ -157,7 +162,6 @@ function animate() {
   requestAnimationFrame(animate);
 
   time = performance.now() / 1000;
-
   cube.material.uniforms.time.value = time;
 
   cube.rotation.x += rotSpeed.x;
