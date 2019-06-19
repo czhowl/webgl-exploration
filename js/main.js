@@ -122,8 +122,8 @@ function init() {
   document.body.appendChild(renderer.domElement)
   adjustLighting()
   addBasicCube()
-  addExperimentalCube()
-  //addExperimentalLightCube()
+//   addExperimentalCube()
+  addExperimentalLightCube()
   animationLoop()
 }
 
@@ -143,6 +143,7 @@ function addBasicCube() {
   
   let mesh = new THREE.Mesh(geometry, material)
   mesh.position.x = -2
+  mesh.position.y = 2
   scene.add(mesh)
   sceneObjects.push(mesh)
 }
@@ -156,7 +157,7 @@ function vertexShader() {
     void main() {
       vUv = position; 
       vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-      vecNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz; //????????
+      vecNormal = vec3(modelViewMatrix * vec4(normal, 0.0));
       gl_Position = projectionMatrix * modelViewPosition; 
     }
   `
@@ -186,7 +187,7 @@ function addExperimentalCube() {
   })
   
   let mesh = new THREE.Mesh(geometry, material)
-  mesh.position.x = 2
+  mesh.position.x = 0
   scene.add(mesh)
   sceneObjects.push(mesh)
 }
@@ -207,28 +208,18 @@ function lambertLightFragmentShader() {
       varying vec3 vecNormal; 
 
       void main() {
-        //I need to learn theory behind this right now my understanding is: looping through all the point light and than apply magic lol.
-        //https://csantosbh.wordpress.com/2014/01/09/custom-shaders-with-three-js-uniforms-textures-and-lighting/
         vec4 addedLights = vec4(0.0, 0.0, 0.0, 1.0);
 
         for(int l = 0; l < NUM_POINT_LIGHTS; l++) {
-            vec3 lightDirection = normalize(modelViewPosition.xyz - pointLights[l].position);
-            addedLights.rgb += clamp(dot(-lightDirection, vecNormal), 0.0, 1.0) * pointLights[l].color
+            vec3 lightDirection = normalize(pointLights[l].position - modelViewPosition.xyz);
+            addedLights.rgb += max(dot(lightDirection, vecNormal), 0.0) * pointLights[l].color
                * 1.0; //'light intensity' 
         }
 
-        //tried a bunch of stuff but I'm not sure how to retrieve the ambient light from THREE.js which would be super neat 
-        //logic at this point is: always add a constant float since ambient light is evenly distributed in the scene
-        //something ain't it with the lighting overall, the direction is defintely not the same as the labert marial from three
-        //time to learn the theory behind ligthing :') 
+        vec3 colorAndPointLight = mix(colorA, colorB, vUv.z) * addedLights.rgb + mix(colorA, colorB, vUv.z) * 0.1;
+        vec3 finalColor = colorAndPointLight;
 
-        vec3 redAndPoint = vec3(1.0 * addedLights.r, 0.0, 0.0);
-        vec3 finalRed = vec3(redAndPoint.r + 0.3, 0.0, 0.0); 
-
-        vec3 colorAndPointLight = mix(colorA, colorB, vUv.z) * addedLights.rgb;
-        vec3 finalColor = vec3(colorAndPointLight.r + 0.3, colorAndPointLight.g + 0.3, colorAndPointLight.b + 0.3);
-
-        gl_FragColor = vec4(finalRed, 1.0);
+        gl_FragColor = vec4(finalColor, 1.0);
       }
   `
 }
@@ -250,7 +241,8 @@ function addExperimentalLightCube() {
   })
   
   let mesh = new THREE.Mesh(geometry, material)
-  mesh.position.x = 2
+  mesh.position.x = -2
+  mesh.position.y = -2
   scene.add(mesh)
   sceneObjects.push(mesh)
 }
