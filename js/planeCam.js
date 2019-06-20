@@ -21,7 +21,7 @@ var material = new THREE.MeshNormalMaterial();
 // plane.material.side = THREE.DoubleSide;
 
 var loader = new THREE.TextureLoader();
-loader.load("../img/ethreal.jpg", function (texture) {
+loader.load("../img/moon.png", function (texture) {
     console.log(texture);
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;

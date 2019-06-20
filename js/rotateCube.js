@@ -33,10 +33,16 @@ void main() {
         vec3 lightDirection = normalize(pointLights[l].position - modelViewPosition.xyz);
         addedLights.rgb += max(dot(lightDirection, vNormal), 0.0) * pointLights[l].color
            * 1.0; //'light intensity' 
+           vec3 R = reflect(-lightDirection, vNormal);
+        vec3 V = normalize(-modelViewPosition.xyz);
+        float specular = 0.0;
+        float specAngle = max(dot(R, V), 0.0);
+        specular = pow(specAngle, 100.0);
+        addedLights.rgb += specular;
     }
     vec3 color = mix(colorA, colorB, vUv.z);
     vec3 c = color * addedLights.rgb + color * 0.1;
-    gl_FragColor = vec4(c, 0.5);
+    gl_FragColor = vec4(c, 0.99);
 }
 `;
 
@@ -45,7 +51,7 @@ const container = document.getElementById('container');
 let controls;
 let startTime, time;
 let cube;
-let rotSpeed = new THREE.Vector3(0.01, 0.01, 0.0);
+let rotSpeed = new THREE.Vector3(0.01, 0.01, 0.01);
 let axesHelper;
 let uniforms;
 let customPointLight;
@@ -82,7 +88,7 @@ function initialize() {
 
   addCube();
   
-  pointLight.position.set(0, 0, 5)
+  pointLight.position.set(0, 3, 5)
   scene.add(pointLight)
 
   scene.add(camera);
@@ -163,9 +169,10 @@ function animate() {
 
   time = performance.now() / 1000;
   cube.material.uniforms.time.value = time;
-
-  cube.rotation.x += rotSpeed.x;
-  cube.rotation.y += rotSpeed.y;
+  
+  // cube.lookAt(camera.position);
+  // cube.rotation.x += rotSpeed.x;
+  // cube.rotation.y += rotSpeed.y;
 
   renderer.render(scene, camera);
 }

@@ -130,7 +130,7 @@ function onWindowResize() {
 function onMouseMove(event) {
     controls.handleMouseMoveRotate(event.clientX, event.clientY);
 };
-
+// switch texture
 function onKeyDown(event) {
     if (event.which == ' '.charCodeAt(0)) {
         var loader = new THREE.TextureLoader();
@@ -151,7 +151,7 @@ function addMesh() {
     // let geometry = new THREE.BoxGeometry(1, 1, 1);
     // let geometry = new THREE.SphereGeometry(1, 50, 50);
     var loader = new THREE.TextureLoader();
-    loader.load('../img/ethreal.jpg', function (texture) {
+    loader.load('../img/mars.png', function (texture) {
         console.log("here");
         mesh.material.uniforms.tex.value = texture;
         mesh.material.needsUpdate = true;
