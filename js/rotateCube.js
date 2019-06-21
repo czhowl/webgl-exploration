@@ -49,7 +49,7 @@ void main() {
 // -----------------------------------------------------------------------------------------------------
 
 let renderer, camera, scene = null;
-const container = document.getElementById('container');
+const container = document.getElementById('three');
 let controls;
 let startTime, time;
 let cube;
@@ -72,7 +72,7 @@ function initialize() {
   });
   renderer.setClearColor(0x000000, 0);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  container.appendChild(renderer.domElement);
 
   // create a camera in the scene
   // camera = new THREE.PerspectiveCamera(
@@ -96,7 +96,7 @@ function initialize() {
 
   addCube();
 
-  pointLight.position.set(0, 3, 5)
+  pointLight.position.set(0, 0, 3)
   scene.add(pointLight)
 
   scene.add(camera);
@@ -214,10 +214,12 @@ function animate() {
   time = performance.now() / 1000;
   cube.material.uniforms.time.value = time;
 
-  target.x += (mouseX * 0.005 - target.x) * 0.05;
-  target.y += (- mouseY * 0.005 - target.y) * 0.05;
-  target.z = 10;
-  cube.lookAt(target);
+  target.x += (mouseX * 0.001 - target.x) * 0.1;
+  target.y += (- mouseY * 0.001 - target.y) * 0.1;
+  var shiftedTarget = new THREE.Vector3(target.x + cube.position.x, target.y + cube.position.y, 10);
+  cube.lookAt(shiftedTarget);
+  cube.rotateY(THREE.Math.degToRad(45));
+  cube.rotateX(THREE.Math.degToRad(-45));
   // cube.rotation.x += rotSpeed.x;
   // cube.rotation.y += rotSpeed.y;
 

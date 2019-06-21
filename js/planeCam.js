@@ -9,7 +9,7 @@ var renderer = new THREE.WebGLRenderer({
 // var winResize = new THREEx.WindowResize(renderer, camera)
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x000000, 0);
-document.body.appendChild(renderer.domElement);
+document.getElementById("three").appendChild(renderer.domElement);
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 var material = new THREE.MeshNormalMaterial();

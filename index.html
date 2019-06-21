@@ -5,6 +5,7 @@
 <head>
     <meta charset=utf-8>
     <title>My first three.js app</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         html,
         body {
@@ -12,20 +13,37 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            background: white;
+            background: black;
             overflow: hidden;
+            font-family: 'Press Start 2P', cursive;
         }
 
         canvas {
             width: 100%;
-            height: 100%
+            height: 100%;
+        }
+
+        #three {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            position: fixed;
+        }
+
+        #title {
+            color: white;
+            position: fixed;
+            left: 10px;
+            bottom: 10px;
+            z-index: 0;
+            font-size: 5em;
         }
     </style>
 </head>
 
 <body>
-    <!-- <div id="container"></div> -->
-
+    <div id="three"></div>
+    <div id="title">This is a website.</div>
     <script src="js/build/three.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
     <script src="js/noise.js"></script>
