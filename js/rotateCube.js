@@ -40,9 +40,9 @@ void main() {
         specular = pow(specAngle, 100.0);
         addedLights.rgb += specular;
     }
-    vec3 color = mix(colorA, colorB, vUv.z);
-    vec3 c = color * addedLights.rgb + color * 0.1;
-    gl_FragColor = vec4(c, 0.99);
+    vec3 color = mix(colorA, colorB, 1.0 - vUv.z - 0.5);
+    vec3 c = color * addedLights.rgb + color * 0.2;
+    gl_FragColor = vec4(c, 0.9);
 }
 `;
 
@@ -56,6 +56,7 @@ let axesHelper;
 let uniforms;
 let customPointLight;
 let pointLight = new THREE.PointLight(0xffffff)
+
 function initialize() {
   scene = new THREE.Scene();
   renderer = new THREE.WebGLRenderer({
@@ -87,7 +88,7 @@ function initialize() {
   //   scene.add(axesHelper);
 
   addCube();
-  
+
   pointLight.position.set(0, 3, 5)
   scene.add(pointLight)
 
@@ -117,7 +118,12 @@ function onWindowResize() {
 };
 
 function onMouseMove(event) {
-  controls.handleMouseMoveRotate(event.clientX, event.clientY);
+  // controls.handleMouseMoveRotate(event.clientX, event.clientY);
+  var x = window.innerWidth;
+  var y = window.innerHeight;
+  const boundX = event.clientX * 0.0005 - x * 0.5 * 0.0005;
+  const boundY = event.clientY * 0.0005 - y * 0.5 * 0.0005;
+  cube.lookAt(new THREE.Vector3(boundX, -boundY, 2));
 };
 
 window.addEventListener('resize', onWindowResize, false);
@@ -152,9 +158,9 @@ function addCube() {
     lights: true,
     side: THREE.DoubleSide,
     transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthTest: true,
-    depthWrite: true,
+    // blending: THREE.AdditiveBlending,
+    // depthTest: true,
+    // depthWrite: true,
   };
 
   const customMaterial = new THREE.ShaderMaterial(shaderMaterialParams);
@@ -169,7 +175,7 @@ function animate() {
 
   time = performance.now() / 1000;
   cube.material.uniforms.time.value = time;
-  
+
   // cube.lookAt(camera.position);
   // cube.rotation.x += rotSpeed.x;
   // cube.rotation.y += rotSpeed.y;
