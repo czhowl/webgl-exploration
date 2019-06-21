@@ -13,7 +13,7 @@ document.getElementById("three").appendChild(renderer.domElement);
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 var material = new THREE.MeshNormalMaterial();
-
+var plane;
 
 // var texture = THREE.TextureLoader( "../img/moon.png" );
 // console.log(texture);
@@ -37,8 +37,9 @@ loader.load("../img/moon.png", function (texture) {
         shading: THREE.SmoothShading,
         transparent: true
     });
-    var plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat);
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
     scene.add(plane);
+    animate();
 });
 
 // var cube = new THREE.Mesh(geometry, material);
@@ -67,6 +68,7 @@ function onWindowResize() {
     camera.top = window.innerHeight / 400;
     camera.bottom = -window.innerHeight / 400;
     camera.updateProjectionMatrix();
+    // plane.scale.set( camera.right - camera.left, camera.top - camera.bottom, 1 );
     controls.handleMouseMoveRotate(window.innerWidth / 2, window.innerHeight / 2);
 };
 
@@ -86,7 +88,7 @@ var animate = function () {
     renderer.render(scene, camera);
 };
 
-animate();
+
 // var tween = TweenMax.to(cube.position, 2, {
 //     x: 4,
 //     ease: Power1.easeInOut,
