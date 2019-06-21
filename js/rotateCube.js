@@ -46,6 +46,8 @@ void main() {
 }
 `;
 
+// -----------------------------------------------------------------------------------------------------
+
 let renderer, camera, scene = null;
 const container = document.getElementById('container');
 let controls;
@@ -55,7 +57,12 @@ let rotSpeed = new THREE.Vector3(0.01, 0.01, 0.01);
 let axesHelper;
 let uniforms;
 let customPointLight;
-let pointLight = new THREE.PointLight(0xffffff)
+let pointLight = new THREE.PointLight(0xffffff);
+var mouseX = 0,
+  mouseY = 0;
+var target = new THREE.Vector3();
+
+// -----------------------------------------------------------------------------------------------------
 
 function initialize() {
   scene = new THREE.Scene();
@@ -84,8 +91,8 @@ function initialize() {
   controls.dispose();
   controls.update();
 
-  //   axesHelper = new THREE.AxesHelper(5);
-  //   scene.add(axesHelper);
+  axesHelper = new THREE.AxesHelper(5);
+  scene.add(axesHelper);
 
   addCube();
 
@@ -105,29 +112,44 @@ function initialize() {
 
 initialize();
 
+// -----------------------------------------------------------------------------------------------------
+
 function onWindowResize() {
   // notify the renderer of the size change
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  var y = window.innerHeight;
+  var x = window.innerWidth;
+  renderer.setSize(x, y);
   // update the camera
-  camera.left = -window.innerWidth / 400;
-  camera.right = window.innerWidth / 400;
-  camera.top = window.innerHeight / 400;
-  camera.bottom = -window.innerHeight / 400;
+  camera.left = -x / 400;
+  camera.right = x / 400;
+  camera.top = y / 400;
+  camera.bottom = -y / 400;
   camera.updateProjectionMatrix();
-  controls.handleMouseMoveRotate(window.innerWidth / 2, window.innerHeight / 2);
+  controls.handleMouseMoveRotate(x / 2, y / 2);
+
+  
+
+  var pos = screenToWorld(new THREE.Vector3(200, y - 200, 0));
+  cube.position.x = pos.x;
+  cube.position.y = pos.y;
 };
 
 function onMouseMove(event) {
-  // controls.handleMouseMoveRotate(event.clientX, event.clientY);
-  var x = window.innerWidth;
-  var y = window.innerHeight;
-  const boundX = event.clientX * 0.0005 - x * 0.5 * 0.0005;
-  const boundY = event.clientY * 0.0005 - y * 0.5 * 0.0005;
-  cube.lookAt(new THREE.Vector3(boundX, -boundY, 2));
+  var x = window.innerWidth / 2;
+  var y = window.innerHeight / 2;
+  mouseX = (event.clientX - x);
+  mouseY = (event.clientY - y);
+  // controls.handleMouseMoveRotate(mouseX, mouseY);
+
+  const boundX = mouseX * 0.0005 - x * 0.5 * 0.0005;
+  const boundY = mouseY * 0.0005 - y * 0.5 * 0.0005;
+  cube.lookAt(new THREE.Vector3(boundX, -boundY, 10));
 };
 
 window.addEventListener('resize', onWindowResize, false);
 document.addEventListener('mousemove', onMouseMove, false);
+
+// -----------------------------------------------------------------------------------------------------
 
 function addCube() {
   // let geometry = new THREE.SphereGeometry(1, 32, 32);
@@ -166,8 +188,24 @@ function addCube() {
   const customMaterial = new THREE.ShaderMaterial(shaderMaterialParams);
 
   cube = new THREE.Mesh(geometry, customMaterial);
+  var y = window.innerHeight;
+  var pos = screenToWorld(new THREE.Vector3(200, y - 200, 0));
+  cube.position.x = pos.x;
+  cube.position.y = pos.y;
   scene.add(cube);
 }
+
+function screenToWorld(_screenPos) {
+  var worldPos = _screenPos.clone();
+  var windowHalfX = window.innerWidth / 2.0;
+  var windowHalfY = window.innerHeight / 2.0;
+  worldPos.x = worldPos.x / windowHalfX - 1;
+  worldPos.y = -worldPos.y / windowHalfY + 1;
+  worldPos = worldPos.unproject(camera);
+  return worldPos;
+}
+
+// -----------------------------------------------------------------------------------------------------
 
 function animate() {
   controls.update();
@@ -176,7 +214,10 @@ function animate() {
   time = performance.now() / 1000;
   cube.material.uniforms.time.value = time;
 
-  // cube.lookAt(camera.position);
+  target.x += (mouseX * 0.005 - target.x) * 0.05;
+  target.y += (- mouseY * 0.005 - target.y) * 0.05;
+  target.z = 10;
+  cube.lookAt(target);
   // cube.rotation.x += rotSpeed.x;
   // cube.rotation.y += rotSpeed.y;
 
