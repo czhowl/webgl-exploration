@@ -40,9 +40,11 @@ void main() {
         specular = pow(specAngle, 100.0);
         addedLights.rgb += specular;
     }
-    vec3 color = mix(colorA, colorB, 1.0 - vUv.z - 0.5);
+    // vec3 color = mix(colorA, colorB, 1.0 - vUv.z - 0.5);
+    float division = smoothstep(0.09, 0.08, vUv.z + 0.5);
+    vec3 color = vec3(0.9 * division + 0.1, 3.0 * division + 0.1, 0.1);
     vec3 c = color * addedLights.rgb + color * 0.2;
-    gl_FragColor = vec4(c, 0.9);
+    gl_FragColor = vec4(c, 1.0);
 }
 `;
 
