@@ -99,6 +99,7 @@ function initialize() {
     });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = Math.pow(1.4, 4.0);
     renderer.setClearColor(0x000000, 0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
@@ -140,7 +141,9 @@ function initialize() {
 
     addCube();
 
-    pointLight.position.set(0, 0, 3)
+    pointLight.position.x = cube.position.x + 2;
+    pointLight.position.y = cube.position.y;
+    pointLight.position.z = 3;
     scene.add(pointLight)
 
     scene.add(camera);
@@ -174,6 +177,8 @@ function onWindowResize() {
     var pos = screenToWorld(new THREE.Vector3(200, y - 200, 0));
     cube.position.x = pos.x;
     cube.position.y = pos.y;
+    pointLight.position.x = cube.position.x + 2;
+    pointLight.position.y = cube.position.y;
 };
 
 function onMouseMove(event) {
@@ -264,6 +269,8 @@ function animate() {
     cube.rotateX(THREE.Math.degToRad(-45));
     // cube.rotation.x += rotSpeed.x;
     // cube.rotation.y += rotSpeed.y;
+
+    
 
     // renderer.render(scene, camera);
     bloomComposer.render();
