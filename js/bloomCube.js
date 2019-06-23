@@ -1,3 +1,7 @@
+// if ( WEBGL.isWebGLAvailable() === false ) {
+//     document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+// }
+
 let finalVertexShader = `
 varying vec2 vUv;
 void main() {
@@ -85,9 +89,12 @@ var mouseX = 0,
 var target = new THREE.Vector3();
 var zoom = 300;
 
+// bloom
 var bloomLayer;
 var renderScene, bloomPass, finalPass;
 var bloomComposer, finalComposer;
+// FXAA antialias
+var fxaaPass, fxaaComposer;
 
 // -----------------------------------------------------------------------------------------------------
 
@@ -100,7 +107,8 @@ function initialize() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.toneMapping = THREE.ReinhardToneMapping;
     renderer.toneMappingExposure = Math.pow(1.4, 4.0);
-    renderer.setClearColor(0x000000, 0);
+    // renderer.setClearColor(0x000000, 0);
+    renderer.autoClear = false;
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
 
@@ -108,10 +116,12 @@ function initialize() {
 
     // postprocessing
     renderScene = new THREE.RenderPass(scene, camera);
+
     bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 1.0, 0);
     bloomPass.threshold = 0;
     bloomPass.strength = 2.7;
     bloomPass.radius = 1.0;
+
     bloomComposer = new THREE.EffectComposer(renderer);
     bloomComposer.renderToScreen = false;
     bloomComposer.addPass(renderScene);
@@ -135,6 +145,17 @@ function initialize() {
     finalComposer = new THREE.EffectComposer(renderer);
     finalComposer.addPass(renderScene);
     finalComposer.addPass(finalPass);
+    // finalComposer.addPass(fxaaPass);
+
+    // fxaa
+    // fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+    // var pixelRatio = renderer.getPixelRatio();
+    // fxaaPass.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * pixelRatio);
+    // fxaaPass.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * pixelRatio);
+    // finalComposer.addPass(fxaaPass);
+    // fxaaComposer = new THREE.EffectComposer(renderer);
+    // fxaaComposer.addPass(finalPass);
+    // fxaaComposer.addPass(fxaaPass);
 
     // axesHelper = new THREE.AxesHelper(5);
     // scene.add(axesHelper);
@@ -270,7 +291,7 @@ function animate() {
     // cube.rotation.x += rotSpeed.x;
     // cube.rotation.y += rotSpeed.y;
 
-    
+
 
     // renderer.render(scene, camera);
     bloomComposer.render();
